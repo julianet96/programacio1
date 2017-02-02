@@ -4,6 +4,8 @@ import java.util.Arrays;
 public class Polynomial {
    public float cfs[];
 
+    String[] cffsc;
+
 
     // Constructor per defecte. Genera un polinomi zero
     public Polynomial() {
@@ -21,6 +23,26 @@ public class Polynomial {
 
     // Constructor a partir d'un string
     public Polynomial(String s) {
+        String[] cffs;
+        cffs = s.split("\\s");
+        int cont=0;
+        //Eliminal els lignes i si es negatiu l'afarram al valor
+        for (int i = 0; i <cffs.length ; i++) {
+            if(cffs[i].contains("+")){ cffs[i]= null;}else if(cffs[i].contains("-")&&cffs[i].length()<2){
+                cffs[i+1]="-"+cffs[i+1];
+                cffs[i]=null;
+            }
+            if(cffs[i]!= null){cont++;}
+        }
+        cffsc=new String[cont];
+        for (int i = 0, y=0; i <cffs.length ; i++) {
+            if(cffs[i]!= null){
+                cffsc[y]=cffs[i];
+                y++;
+            }
+        }
+
+        System.out.println(Arrays.toString(cffsc));
         cfs = new float[1];
         cfs[0]= 0;
     }

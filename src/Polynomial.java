@@ -76,7 +76,7 @@ public class Polynomial {
                 }
                 coefi[i]=Integer.parseInt( cffsc[i].substring(0,p));
 
-
+                //si no conte x que me escrigui el valor normal
             }else {coefi[i]=Integer.parseInt( cffsc[i]);}
 
         }
@@ -106,11 +106,43 @@ public class Polynomial {
 
     // Suma el polinomi amb un altre. No modifica el polinomi actual (this). Genera un de nou
     public Polynomial add(Polynomial p) {
-        Polynomial resultat = new Polynomial();
+        Polynomial resultat;
+        float suma[];
+        if(p.cfs.length==this.cfs.length) {
+           suma= new float[p.cfs.length];
+            for (int i = 0; i < p.cfs.length; i++) {
+                suma[i] = p.cfs[i] + this.cfs[i];
+            }
+            resultat = new Polynomial(suma);
+            return resultat;
 
-        
-
-        return resultat;
+        }else if(p.cfs.length<this.cfs.length){
+            suma=new float[this.cfs.length];
+            for (int i = 0,y=0; i <this.cfs.length ; i++) {
+                int comensa=this.cfs.length-p.cfs.length;
+                if (i<comensa){
+                    suma[i]=this.cfs[i];
+                }else {
+                    suma[i] = p.cfs[y] + this.cfs[i];
+                    y++;
+                }
+            }
+            resultat = new Polynomial(suma);
+            return resultat;
+        }else {
+            suma=new float[p.cfs.length];
+            for (int i = 0,y=0; i <p.cfs.length ; i++) {
+                int comensa=p.cfs.length-this.cfs.length;
+                if (i<comensa){
+                    suma[i]=p.cfs[i];
+                }else {
+                    suma[i] = this.cfs[y] + p.cfs[i];
+                    y++;
+                }
+            }
+            resultat = new Polynomial(suma);
+            return resultat;
+        }
     }
 
     // Multiplica el polinomi amb un altre. No modifica el polinomi actual (this). Genera un de nou
@@ -164,6 +196,7 @@ public class Polynomial {
                 if(exp==1){sb.append(ccc[i]+"x"); continue;}
                 if(ccc[i]==1&&i==0){sb.append("x^" + exp); exp--; continue;}
                 if(ccc[i]==-1&&i==0){sb.append("-x^" + exp); exp--; continue;}
+                if(ccc[i]==1){sb.append("x^"+ exp); exp--; continue;}
                 sb.append(ccc[i] + "x^" + exp);
                 exp--;
                 continue;

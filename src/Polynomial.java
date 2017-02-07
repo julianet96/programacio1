@@ -47,7 +47,7 @@ public class Polynomial {
         }
         //pot ser que hi hagui codi repetit
        int[] exp = new int[cffsc.length];
-        float [] vari=new float[cffsc.length];
+        float [] coefi=new float[cffsc.length];
         for (int i = 0; i <cffsc.length ; i++) {
            int n= cffsc[i].indexOf("^");
             int p= cffsc[i].indexOf("x");
@@ -56,28 +56,28 @@ public class Polynomial {
                 exp[i]=Integer.parseInt( cffsc[i].substring(n));
                //comprobam si la variable es 0 que me posi un 1 o -1
                 if(cffsc[i].substring(0,p).equals("-")) {
-                    vari[i] = -1;
+                    coefi[i] = -1;
                     continue;
                 } else if(p==0) {
-                    vari[i] = 1;
+                    coefi[i] = 1;
                     continue;
                 }
-                vari[i]=Integer.parseInt( cffsc[i].substring(0,p));
+                coefi[i]=Integer.parseInt( cffsc[i].substring(0,p));
                 continue;
             }else if(cffsc[i].contains("x")){
                 exp[i]=1;
                 //comprobam si la variable es 0 que me posi un 1 o -1
                 if(cffsc[i].substring(0,p).equals("-")) {
-                    vari[i] = -1;
+                    coefi[i] = -1;
                     continue;
                 } else if(p==0) {
-                vari[i] = 1;
+                coefi[i] = 1;
                 continue;
                 }
-                vari[i]=Integer.parseInt( cffsc[i].substring(0,p));
+                coefi[i]=Integer.parseInt( cffsc[i].substring(0,p));
 
 
-            }else {vari[i]=Integer.parseInt( cffsc[i]);}
+            }else {coefi[i]=Integer.parseInt( cffsc[i]);}
 
         }
         //volem sebre quin es la potencia mes alta
@@ -88,8 +88,13 @@ public class Polynomial {
         }
         //colocam els verlors per els seus exponents
        float[] cfso=new float[x+1];
-        for (int i = 0; i <vari.length; i++) {
-            cfso[exp[i]]=vari[i];
+        for (int i = 0; i <coefi.length; i++) {
+            //contemp que si els exponens son repetits mels sumi
+            if(cfso[exp[i]]==0){
+                cfso[exp[i]] = coefi[i];
+            }else {
+                cfso[exp[i]] = coefi[i] + cfso[exp[i]];
+            }
 
         }
         cfs=new float[x+1];
@@ -97,17 +102,15 @@ public class Polynomial {
         for (int i = x, d=0; i >=0 ; i--, d++) {
             cfs[d]=cfso[i];
         }
-
-
-        System.out.println(Arrays.toString(exp));
-        System.out.println(Arrays.toString(cffsc));
-        System.out.println(Arrays.toString(cfs));
-
     }
 
     // Suma el polinomi amb un altre. No modifica el polinomi actual (this). Genera un de nou
     public Polynomial add(Polynomial p) {
-        return null;
+        Polynomial resultat = new Polynomial();
+
+        
+
+        return resultat;
     }
 
     // Multiplica el polinomi amb un altre. No modifica el polinomi actual (this). Genera un de nou
@@ -139,6 +142,7 @@ public class Polynomial {
         StringBuilder sb = new StringBuilder();
         int [] ccc=new int[cfs.length];
         int exp = cfs.length -1;
+        int p=0;
         for (int i = 0; i < this.cfs.length; i++) {
             ccc[i]=(int)cfs[i];
             int n = ccc[i];
@@ -146,8 +150,14 @@ public class Polynomial {
                 sb.append((int) cfs[i]);
                 continue;
             }
+
+            if(ccc[i]==0&&exp>0){
+                exp--;
+                p++;
+                continue;
+            }
             if(i<this.cfs.length-1) {
-                if(ccc[i]>0&&i>0){sb.append(" + ");}else if(ccc[i]<0&&i!=0) {ccc[i]=n*(-1);sb.append(" - "); }
+                if(ccc[i]>0&&i!=p){sb.append(" + ");}else if(ccc[i]<0&&i!=p) {ccc[i]=n*(-1);sb.append(" - "); }
                 if(ccc[i]<0&& i != 0){ccc[i]=n*-1;}
                 if(ccc[i]==0){exp--; continue;}
                 if(ccc[i]==1&&exp==1){sb.append("x"); continue;}

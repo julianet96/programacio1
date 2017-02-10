@@ -5,10 +5,11 @@ import static org.junit.Assert.assertEquals;
  */
 public class main {
     public static void main(String[] args) {
-        Polynomial p1,p2;
-        p1 = new Polynomial("-x^2 + 10");
-        p2 = new Polynomial("73x^8 + 3x^4");
-       p1.add(p2).toString();
+        Polynomial p1, p2;
+//        Polynomial[] res;
 
+        p1 = new Polynomial("x^4 - 6x^2 + 8");
+        p2 = new Polynomial("x - 1");
+        p1.div(p2);
     }
 }

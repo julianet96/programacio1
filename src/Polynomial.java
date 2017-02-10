@@ -5,10 +5,8 @@ import java.util.Arrays;
 
 public class Polynomial {
    public float cfs[];
-
-    String[] cffsc;
-
-
+   public int exp[];
+   public float coefi[];
     // Constructor per defecte. Genera un polinomi zero
     public Polynomial() {
       cfs = new float[1];
@@ -38,7 +36,7 @@ public class Polynomial {
             if(cffs[i]!= null){cont++;}
         }
         //Eliminam els nulls
-        cffsc=new String[cont];
+        String[] cffsc=new String[cont];
         for (int i = 0, y=0; i <cffs.length ; i++) {
             if(cffs[i]!= null){
                 cffsc[y]=cffs[i];
@@ -46,8 +44,8 @@ public class Polynomial {
             }
         }
         //pot ser que hi hagui codi repetit
-       int[] exp = new int[cffsc.length];
-        float [] coefi=new float[cffsc.length];
+        exp = new int[cffsc.length];
+        coefi=new float[cffsc.length];
         for (int i = 0; i <cffsc.length ; i++) {
            int n= cffsc[i].indexOf("^");
             int p= cffsc[i].indexOf("x");
@@ -82,26 +80,7 @@ public class Polynomial {
         }
         //volem sebre quin es la potencia mes alta
         //per poder crear un arrai de la dimensio
-        int x=0;
-        for (int i = 0; i <exp.length ; i++) {
-            if(exp[i]>x){x=exp[i];}
-        }
-        //colocam els verlors per els seus exponents
-       float[] cfso=new float[x+1];
-        for (int i = 0; i <coefi.length; i++) {
-            //contemp que si els exponens son repetits mels sumi
-            if(cfso[exp[i]]==0){
-                cfso[exp[i]] = coefi[i];
-            }else {
-                cfso[exp[i]] = coefi[i] + cfso[exp[i]];
-            }
-
-        }
-        cfs=new float[x+1];
-        //Giram l'array per poderla pasar al toString
-        for (int i = x, d=0; i >=0 ; i--, d++) {
-            cfs[d]=cfso[i];
-        }
+        cfs = ordena(coefi,exp);
     }
 
     // Suma el polinomi amb un altre. No modifica el polinomi actual (this). Genera un de nou
@@ -147,13 +126,47 @@ public class Polynomial {
 
     // Multiplica el polinomi amb un altre. No modifica el polinomi actual (this). Genera un de nou
     public Polynomial mult(Polynomial p2) {
-        return null;
+        Polynomial result ;
+        float[] coeficien;
+        int[] expo;
+        //calculam la llargada dels arrays
+        coeficien = new float[this.coefi.length*p2.coefi.length];
+        expo = new int[this.coefi.length*p2.coefi.length];
+        for (int i = 0, d=0; i < this.coefi.length; i++) {
+            for (int j = 0; j < p2.coefi.length; j++) {
+                coeficien[d]=this.coefi[i]*p2.coefi[j];
+                expo[d]=this.exp[i]+p2.exp[j];
+                d++;
+            }
+        }
+        float[] cfso=ordena(coeficien,expo);
+        result= new Polynomial(cfso);
+        return result;
     }
 
     // Divideix el polinomi amb un altre. No modifica el polinomi actual (this). Genera un de nou
     // Torna el quocient i també el residu (ambdós polinomis)
     public Polynomial[] div(Polynomial p2) {
-       return null;
+        Polynomial[] result = new Polynomial[2];
+
+        Polynomial cocient ;
+        Polynomial residu = new Polynomial();
+        Polynomial resultat = new Polynomial();
+//        for (int i = 0; i <this.cfs.length ; i++) {
+//            for (int j = 0; j <this.coefi.length ; j++) {
+                float divisio = p2.coefi[0]/this.coefi[0];
+                int divi = (int)divisio;
+                int divisio1 = this.exp[0] - p2.exp[0];
+        cocient = new Polynomial(divi+"x^"+divisio1);
+       cocient= cocient.mult(p2);
+        System.out.println(cocient.toString());
+
+        System.out.println(divisio1);
+        System.out.println(divisio);
+//            }
+//        }
+
+       return result;
     }
 
     // Troba les arrels del polinomi, ordenades de menor a major
@@ -182,7 +195,6 @@ public class Polynomial {
                 sb.append((int) cfs[i]);
                 continue;
             }
-
             if(ccc[i]==0&&exp>0){
                 exp--;
                 p++;
@@ -208,5 +220,26 @@ public class Polynomial {
         }
         return sb.toString();
     }
-
+    private float[] ordena(float[] cof,int[] ex){
+        int x=0;
+        for (int i = 0; i <ex.length ; i++) {
+            if(ex[i]>x){x=ex[i];}
+        }
+        //colocam els verlors per els seus exponents
+        float[] cfso=new float[x+1];
+        for (int i = 0; i <cof.length; i++) {
+            //contemp que si els exponens son repetits mels sumi
+            if(cfso[ex[i]]==0){
+                cfso[ex[i]] = cof[i];
+            }else {
+                cfso[ex[i]] = cof[i] + cfso[ex[i]];
+            }
+        }
+       float[] cfst=new float[x+1];
+        //Giram l'array per poderla pasar al toString
+        for (int i = x, d=0; i >=0 ; i--, d++) {
+            cfst[d]=cfso[i];
+        }
+        return cfst;
+    }
 }

@@ -158,61 +158,68 @@ public class Polynomial {
         int expon=this.exp[0];
 
         for (int i = 0; i <this.cfs.length-2 ; i++) {
-            if(i==0){
-                resultat= new Polynomial(this.cfs);
+            if (i == 0) {
+                resultat = new Polynomial(this.cfs);
             }
-//            if (i ==this.cfs.length-2){
-//                division[this.cfs.length-2]=resultat.coefi[0]/p2.coefi[0];}
-//            else {
-                System.out.println(resultat.toString());
-                division[i] = resultat.cfs[0] / p2.coefi[0];
-//            }
-            divi[i] = (int)division[i];
-            int expo= expon - p2.exp[0];
-            expon = expo;
-            dviexp[i]=  expo;
-            if (dviexp[i]==1){cocient=new Polynomial(divi[i]+"x");}
-            else { cocient = new Polynomial(divi[i]+"x^"+dviexp[i]);}
-            cocient= cocient.mult(p2);
-            cocient= cocient.canviasigna();
-            cocient = resultat.add(cocient);
 
-            System.out.println(Arrays.toString(dviexp));
-            System.out.println(Arrays.toString(divi));
-            if (i!=this.cfs.length-1){
-                resultat = new Polynomial(cocient.toString());
+//                System.out.println(resultat.toString());
+                division[i] = resultat.cfs[0] / p2.coefi[0];
+
+                divi[i] = (int) division[i];
+                int expo;
+                if (expon - p2.exp[0] < 0) {
+                    expo = 0;
+                } else {
+                    expo = expon - p2.exp[0];
+                    expon = expo;
+                }
+                dviexp[i] = expo;
+                if (dviexp[i] == 1) {
+                    cocient = new Polynomial(divi[i] + "x");
+                } else {
+                    cocient = new Polynomial(divi[i] + "x^" + expo);
+                }
+                cocient = cocient.mult(p2);
+                cocient = cocient.canviasigna();
+                cocient = resultat.add(cocient);
+
+//                System.out.println(Arrays.toString(dviexp));
+//                System.out.println(Arrays.toString(divi));
+                if (i != this.cfs.length - 1) {
+                    resultat = new Polynomial(cocient.toString());
+                }
+            if(resultat.exp[0]< p2.exp[0]) {
+                break;
             }
 
         }
-//        System.out.println(resultat.toString());
+
+
+
         if(resultat.exp[0]>=p2.exp[0]){
             division[this.cfs.length-2]=resultat.coefi[0]/p2.coefi[0];
             int divisi=(int)division[this.cfs.length-2];
-            System.out.println(divisi);
+//            System.out.println(divisi);
             residu = new Polynomial(String.valueOf(divisi));
             residu = residu.mult(p2);
-            System.out.println(residu);
+//            System.out.println(residu);
             residu = residu.canviasigna();
-            System.out.println(residu);
+//            System.out.println(residu);
             residu = residu.add(resultat);
-            System.out.println(residu);
+//            System.out.println(residu);
             float[] cfso = residu.eliminazero(residu.cfs);
             result[1]=new Polynomial(cfso);
+        }else {
+            float[]solu;
+            solu = ordena(division, dviexp);
+            Polynomial sol = new Polynomial(solu);
+            result[0] = new Polynomial(sol.toString());
+            result[1] = resultat;
+            return result;
         }
-//        division[this.cfs.length-2]=resultat.coefi[0]/p2.coefi[0];
-//        int divisi=(int)division[this.cfs.length-2];
-//        System.out.println(divisi);
-//        residu = new Polynomial(String.valueOf(divisi));
-//        residu = residu.mult(p2);
-//        System.out.println(residu);
-//        residu = residu.canviasigna();
-//        System.out.println(residu);
-//        residu = residu.add(resultat);
-//        System.out.println(residu);
-//        float[] cfso = residu.eliminazero(residu.cfs);
-//        System.out.println(Arrays.toString(division));
-        result[0]=new Polynomial(division);
-//        result[1]=new Polynomial(cfso);
+        Polynomial sol = new Polynomial(division);
+        result[0] = new Polynomial(sol.toString());
+
        return result;
     }
 

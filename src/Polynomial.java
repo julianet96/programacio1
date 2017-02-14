@@ -141,6 +141,7 @@ public class Polynomial {
         }
         float[] cfso=ordena(coeficien,expo);
         result= new Polynomial(cfso);
+//        System.out.println(result.toString());
         return result;
     }
 
@@ -148,24 +149,70 @@ public class Polynomial {
     // Torna el quocient i també el residu (ambdós polinomis)
     public Polynomial[] div(Polynomial p2) {
         Polynomial[] result = new Polynomial[2];
+        Polynomial residu;
+        Polynomial resultat=new Polynomial();
+        Polynomial cocient;
+        float[]division = new float[this.cfs.length-1];
+        int[] divi= new int[this.cfs.length-1];
+        int[] dviexp = new int[this.cfs.length-1];
+        int expon=this.exp[0];
 
-        Polynomial cocient ;
-        Polynomial residu = new Polynomial();
-        Polynomial resultat = new Polynomial();
-//        for (int i = 0; i <this.cfs.length ; i++) {
-//            for (int j = 0; j <this.coefi.length ; j++) {
-                float divisio = p2.coefi[0]/this.coefi[0];
-                int divi = (int)divisio;
-                int divisio1 = this.exp[0] - p2.exp[0];
-        cocient = new Polynomial(divi+"x^"+divisio1);
-       cocient= cocient.mult(p2);
-        System.out.println(cocient.toString());
-
-        System.out.println(divisio1);
-        System.out.println(divisio);
+        for (int i = 0; i <this.cfs.length-2 ; i++) {
+            if(i==0){
+                resultat= new Polynomial(this.cfs);
+            }
+//            if (i ==this.cfs.length-2){
+//                division[this.cfs.length-2]=resultat.coefi[0]/p2.coefi[0];}
+//            else {
+                System.out.println(resultat.toString());
+                division[i] = resultat.cfs[0] / p2.coefi[0];
 //            }
-//        }
+            divi[i] = (int)division[i];
+            int expo= expon - p2.exp[0];
+            expon = expo;
+            dviexp[i]=  expo;
+            if (dviexp[i]==1){cocient=new Polynomial(divi[i]+"x");}
+            else { cocient = new Polynomial(divi[i]+"x^"+dviexp[i]);}
+            cocient= cocient.mult(p2);
+            cocient= cocient.canviasigna();
+            cocient = resultat.add(cocient);
 
+            System.out.println(Arrays.toString(dviexp));
+            System.out.println(Arrays.toString(divi));
+            if (i!=this.cfs.length-1){
+                resultat = new Polynomial(cocient.toString());
+            }
+
+        }
+//        System.out.println(resultat.toString());
+        if(resultat.exp[0]>=p2.exp[0]){
+            division[this.cfs.length-2]=resultat.coefi[0]/p2.coefi[0];
+            int divisi=(int)division[this.cfs.length-2];
+            System.out.println(divisi);
+            residu = new Polynomial(String.valueOf(divisi));
+            residu = residu.mult(p2);
+            System.out.println(residu);
+            residu = residu.canviasigna();
+            System.out.println(residu);
+            residu = residu.add(resultat);
+            System.out.println(residu);
+            float[] cfso = residu.eliminazero(residu.cfs);
+            result[1]=new Polynomial(cfso);
+        }
+//        division[this.cfs.length-2]=resultat.coefi[0]/p2.coefi[0];
+//        int divisi=(int)division[this.cfs.length-2];
+//        System.out.println(divisi);
+//        residu = new Polynomial(String.valueOf(divisi));
+//        residu = residu.mult(p2);
+//        System.out.println(residu);
+//        residu = residu.canviasigna();
+//        System.out.println(residu);
+//        residu = residu.add(resultat);
+//        System.out.println(residu);
+//        float[] cfso = residu.eliminazero(residu.cfs);
+//        System.out.println(Arrays.toString(division));
+        result[0]=new Polynomial(division);
+//        result[1]=new Polynomial(cfso);
        return result;
     }
 
@@ -195,12 +242,16 @@ public class Polynomial {
                 sb.append((int) cfs[i]);
                 continue;
             }
+
+
             if(ccc[i]==0&&exp>0){
                 exp--;
                 p++;
                 continue;
             }
             if(i<this.cfs.length-1) {
+                if(ccc[i]<0&&i==p&&exp>1&&ccc[i]!=-1){sb.append(ccc[i]+"x^"+exp);exp--;continue;}
+                if(ccc[i]<0&&i==p&&exp==1&&ccc[i]!=-1){sb.append(ccc[i]+"x");exp--; continue;}
                 if(ccc[i]>0&&i!=p){sb.append(" + ");}else if(ccc[i]<0&&i!=p) {ccc[i]=n*(-1);sb.append(" - "); }
                 if(ccc[i]<0&& i != 0){ccc[i]=n*-1;}
                 if(ccc[i]==0){exp--; continue;}
@@ -213,7 +264,11 @@ public class Polynomial {
                 exp--;
                 continue;
             }
-            if(ccc[i]>0){sb.append(" + ");}else if(ccc[i]<0) {ccc[i]=n*(-1);sb.append(" - ");}
+            if(ccc[i]>0){sb.append(" + ");}else if(ccc[i]<0 ) {ccc[i]=n*(-1);sb.append(" - ");}
+
+            if(sb.toString().contains("x")&&ccc[i]==0){
+                continue;
+            }
             if(i==this.cfs.length-1){
                 sb.append(ccc[i]);
             }
@@ -242,4 +297,32 @@ public class Polynomial {
         }
         return cfst;
     }
+    private Polynomial canviasigna(){
+        for (int i = 0; i <this.cfs.length ; i++) {
+              this.cfs[i]=this.cfs[i]*-1;
+        }
+        Polynomial result = new Polynomial(this.cfs);
+        return result;
+    }
+    private float[] eliminazero(float[] cfsi){
+        int cont =0;
+        float[] cfso;
+        if(cfsi[cfsi.length-1]!=0) {
+            for (int i = 0; i < cfsi.length; i++) {
+                if (cfsi[i] == 0) {
+                    cont++;
+                    continue;
+                }
+
+            }
+             cfso = new float[cfsi.length - cont];
+            for (int i = 0, d = cont; i < cfsi.length - cont; i++, d++) {
+                cfso[i] = cfsi[d];
+            }
+            return cfso;
+        }else {
+            return cfsi;
+        }
+    }
 }
+

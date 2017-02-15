@@ -1,15 +1,15 @@
 import org.hamcrest.core.SubstringMatcher;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
+        import java.text.DecimalFormat;
+        import java.util.Arrays;
 
 public class Polynomial {
-   public float cfs[];
-   public int exp[];
-   public float coefi[];
+    public float cfs[];
+    public int exp[];
+    public float coefi[];
     // Constructor per defecte. Genera un polinomi zero
     public Polynomial() {
-      cfs = new float[1];
+        cfs = new float[1];
         cfs[0]= 0;
     }
 
@@ -47,12 +47,12 @@ public class Polynomial {
         exp = new int[cffsc.length];
         coefi=new float[cffsc.length];
         for (int i = 0; i <cffsc.length ; i++) {
-           int n= cffsc[i].indexOf("^");
+            int n= cffsc[i].indexOf("^");
             int p= cffsc[i].indexOf("x");
             n++;
             if (cffsc[i].contains("x^")){
                 exp[i]=Integer.parseInt( cffsc[i].substring(n));
-               //comprobam si la variable es 0 que me posi un 1 o -1
+                //comprobam si la variable es 0 que me posi un 1 o -1
                 if(cffsc[i].substring(0,p).equals("-")) {
                     coefi[i] = -1;
                     continue;
@@ -69,8 +69,8 @@ public class Polynomial {
                     coefi[i] = -1;
                     continue;
                 } else if(p==0) {
-                coefi[i] = 1;
-                continue;
+                    coefi[i] = 1;
+                    continue;
                 }
                 coefi[i]=Integer.parseInt( cffsc[i].substring(0,p));
 
@@ -88,7 +88,7 @@ public class Polynomial {
         Polynomial resultat;
         float suma[];
         if(p.cfs.length==this.cfs.length) {
-           suma= new float[p.cfs.length];
+            suma= new float[p.cfs.length];
             for (int i = 0; i < p.cfs.length; i++) {
                 suma[i] = p.cfs[i] + this.cfs[i];
             }
@@ -161,54 +161,48 @@ public class Polynomial {
             if (i == 0) {
                 resultat = new Polynomial(this.cfs);
             }
-
-//                System.out.println(resultat.toString());
-                division[i] = resultat.cfs[0] / p2.coefi[0];
-
-                divi[i] = (int) division[i];
-                int expo;
-                if (expon - p2.exp[0] < 0) {
-                    expo = 0;
-                } else {
-                    expo = expon - p2.exp[0];
-                    expon = expo;
-                }
-                dviexp[i] = expo;
-                if (dviexp[i] == 1) {
-                    cocient = new Polynomial(divi[i] + "x");
-                } else {
-                    cocient = new Polynomial(divi[i] + "x^" + expo);
-                }
-                cocient = cocient.mult(p2);
-                cocient = cocient.canviasigna();
-                cocient = resultat.add(cocient);
-
-//                System.out.println(Arrays.toString(dviexp));
-//                System.out.println(Arrays.toString(divi));
-                if (i != this.cfs.length - 1) {
-                    resultat = new Polynomial(cocient.toString());
-                }
+            division[i] = resultat.cfs[0] / p2.coefi[0];
+            divi[i] = (int) division[i];
+            int expo;
+            if (expon - p2.exp[0] < 0) {
+                expo = 0;
+            } else {
+                expo = expon - p2.exp[0];
+                expon = expo;
+            }
+            dviexp[i] = expo;
+            if (dviexp[i] == 1) {
+                cocient = new Polynomial(divi[i] + "x");
+            } else {
+                cocient = new Polynomial(divi[i] + "x^" + expo);
+            }
+            cocient = cocient.mult(p2);
+            cocient = cocient.canviasigna();
+            cocient = resultat.add(cocient);
+            if (i != this.cfs.length - 1) {
+                resultat = new Polynomial(cocient.toString());
+            }
             if(resultat.exp[0]< p2.exp[0]) {
                 break;
             }
 
         }
 
-
-
         if(resultat.exp[0]>=p2.exp[0]){
             division[this.cfs.length-2]=resultat.coefi[0]/p2.coefi[0];
             int divisi=(int)division[this.cfs.length-2];
-//            System.out.println(divisi);
+
             residu = new Polynomial(String.valueOf(divisi));
             residu = residu.mult(p2);
-//            System.out.println(residu);
+
             residu = residu.canviasigna();
-//            System.out.println(residu);
             residu = residu.add(resultat);
-//            System.out.println(residu);
             float[] cfso = residu.eliminazero(residu.cfs);
             result[1]=new Polynomial(cfso);
+            Polynomial sol = new Polynomial(division);
+            result[0] = new Polynomial(sol.toString());
+
+            return result;
         }else {
             float[]solu;
             solu = ordena(division, dviexp);
@@ -217,15 +211,94 @@ public class Polynomial {
             result[1] = resultat;
             return result;
         }
-        Polynomial sol = new Polynomial(division);
-        result[0] = new Polynomial(sol.toString());
-
-       return result;
     }
 
     // Troba les arrels del polinomi, ordenades de menor a major
     public float[] roots() {
+        for (int i = 0; i <this.coefi.length ; i++) {
+            if(i<this.coefi.length-1){
+               if( this.exp[i]<this.exp[i+1]){
+                   int t = this.exp[i];
+                   float t1=this.coefi[i];
+                   this.exp[i]= this.exp[i+1];
+                   this.coefi[i]=this.coefi[i+1];
+                   this.exp[i+1]=t;
+                   this.coefi[i+1]=t1;
+               }
+            }
+        }
+
+        float[] result;
+        //Arrels amb Polinomis de grau 1
+        if (this.exp[0]==1){
+            result= new float[1];
+           result[0]= this.coefi[1] / this.coefi[0];
+            result[0]=result[0]*-1;
+            return result;
+
+         //Arrels amb polinomi de grau 2 pero amb un exponent
+        }else if(this.coefi.length==2&&this.exp[0]==2&&this.exp[1]==0) {
+            result=new float[2];
+            this.coefi[1]=this.coefi[1]*-1;
+            result[1]=(float)Math.sqrt(this.coefi[1]/this.coefi[0]);
+            result[0]= result[1]*-1;
+            return result;
+        }else if(this.coefi.length==3&&this.exp[0]==2&&this.exp[1]==1){
+            float a = this.cfs[0];
+            float b = this.cfs[1];
+            float c = this.cfs[2];
+            float d = (b*b)-(4*a*c);
+            if (d<0){
+                return null;
+            }else if (d==0){
+                result = new float[1];
+                result[0]=(b*-1)/(2*a);
+
+                return result;
+            }else {
+                result = new float[2];
+                double result1 = ((b*-1)+Math.sqrt(d))/(2*a);
+                double result2 = ((b*-1)-Math.sqrt(d))/(2*a);
+                result[1]=(float)result1;
+                result[0]=(float)result2;
+                return result;
+            }
+         //Arrels bicuadratique exponent elevat a 4
+        }else if (this.coefi.length==3&&this.exp[0]==4&&this.exp[1]==2){
+            float a = this.coefi[0];
+            float b = this.coefi[1];
+            float c = this.coefi[2];
+            float d = (b*b)-(4*a*c);
+            if (d<0){
+                return null;
+            }else if (d==0){
+                float result1=(b*-1)/(2*a);
+                if (result1 < 0){
+                    return null;
+                }else {
+                    result = new float[2];
+                    result[1]=(float)Math.sqrt(result1);
+                    result[0]= result[1]*(-1);
+                    return result;
+                }
+
+            }else {
+                result = new float[4];
+                double arrel1 = ((b*-1)+Math.sqrt(d))/(2*a);
+                double arrel2 = ((b*-1)-Math.sqrt(d))/(2*a);
+                double result1 = Math.sqrt(arrel1);
+                double result2 = result1*-1;
+                double result3 = Math.sqrt(arrel2);
+                double result4 = result3*(-1);
+                result[3]=(float)result1;
+                result[2]=(float)result3;
+                result[1]=(float)result4;
+                result[0]=(float)result2;
+                return result;
+            }
+        }
         return null;
+
     }
 
     // Torna "true" si els polinomis són iguals. Això és un override d'un mètode de la classe Object
@@ -234,7 +307,6 @@ public class Polynomial {
         Polynomial p = (Polynomial) o;
         return p.toString().equals(this.toString());
     }
-
     // Torna la representació en forma de String del polinomi. Override d'un mètode de la classe Object
     @Override
     public String toString() {
@@ -249,8 +321,6 @@ public class Polynomial {
                 sb.append((int) cfs[i]);
                 continue;
             }
-
-
             if(ccc[i]==0&&exp>0){
                 exp--;
                 p++;
@@ -284,11 +354,13 @@ public class Polynomial {
     }
     private float[] ordena(float[] cof,int[] ex){
         int x=0;
+
         for (int i = 0; i <ex.length ; i++) {
             if(ex[i]>x){x=ex[i];}
         }
         //colocam els verlors per els seus exponents
         float[] cfso=new float[x+1];
+
         for (int i = 0; i <cof.length; i++) {
             //contemp que si els exponens son repetits mels sumi
             if(cfso[ex[i]]==0){
@@ -297,7 +369,8 @@ public class Polynomial {
                 cfso[ex[i]] = cof[i] + cfso[ex[i]];
             }
         }
-       float[] cfst=new float[x+1];
+        float[] cfst=new float[x+1];
+
         //Giram l'array per poderla pasar al toString
         for (int i = x, d=0; i >=0 ; i--, d++) {
             cfst[d]=cfso[i];
@@ -306,7 +379,7 @@ public class Polynomial {
     }
     private Polynomial canviasigna(){
         for (int i = 0; i <this.cfs.length ; i++) {
-              this.cfs[i]=this.cfs[i]*-1;
+            this.cfs[i]=this.cfs[i]*-1;
         }
         Polynomial result = new Polynomial(this.cfs);
         return result;
@@ -320,9 +393,8 @@ public class Polynomial {
                     cont++;
                     continue;
                 }
-
             }
-             cfso = new float[cfsi.length - cont];
+            cfso = new float[cfsi.length - cont];
             for (int i = 0, d = cont; i < cfsi.length - cont; i++, d++) {
                 cfso[i] = cfsi[d];
             }

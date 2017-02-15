@@ -296,9 +296,29 @@ public class Polynomial {
                 result[0]=(float)result2;
                 return result;
             }
+          //arrels de polinomis amb un exponent elevat a cualsevol numero
+          // pero el seguent no ha de tenir exponent x^3 + 2
+        }else if(this.coefi.length==2&& exp[1]==0){
+
+            if(exp[0]%2==0){
+                result = new float[2];
+                if (coefi[1]*(-1)<0){
+                    return null;
+                }else {
+                    float n = (float)exp[0];
+                    result[1]=(float)Math.pow((coefi[1]*(-1)),1.0/n);
+                    result[0]=result[1]*(-1);
+                    return result;
+                }
+            }else { //si l'exponent en que dividim es inpar se pot fer arrels negatives
+                result = new float[1];
+                float n = (float)exp[0];
+                result[0]=(float)Math.pow((coefi[1]),1.0/n);
+                result[0]= result[0]*(-1);
+                return result;
+            }
         }
         return null;
-
     }
 
     // Torna "true" si els polinomis són iguals. Això és un override d'un mètode de la classe Object

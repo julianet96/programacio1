@@ -178,21 +178,21 @@ public class PolynomialTest {
         // Biquadràtica
         p = new Polynomial("x^4 - 10x^2 + 25");
         assertEqualsFloats(new float[]{(float) -2.236, (float) 2.236}, p.roots());
-//
-//        p = new Polynomial("x^4 - 100");
-//        assertEqualsFloats(new float[]{-3.1622f, 3.1622f}, p.roots());
-//
-//        p = new Polynomial("x^3 + 100");
-//        assertEqualsFloats(new float[]{(float) -4.6415}, p.roots());
-//
-//        p = new Polynomial("x^8 - 100");
-//        assertEqualsFloats(new float[]{-1.778f, 1.778f}, p.roots());
-//
-//        p = new Polynomial("x^13 + 150");
-//        assertEqualsFloats(new float[]{-1.470f}, p.roots());
-//
-//        p = new Polynomial("x^12 + 1");
-//        assertNull(p.roots());
+
+        p = new Polynomial("x^4 - 100");
+        assertEqualsFloats(new float[]{-3.1622f, 3.1622f}, p.roots());
+
+        p = new Polynomial("x^3 + 100");
+        assertEqualsFloats(new float[]{(float) -4.6415}, p.roots());
+
+        p = new Polynomial("x^8 - 100");
+        assertEqualsFloats(new float[]{-1.778f, 1.778f}, p.roots());
+
+        p = new Polynomial("x^13 + 150");
+        assertEqualsFloats(new float[]{-1.470f}, p.roots());
+
+        p = new Polynomial("x^12 + 1");
+        assertNull(p.roots());
 //
 //        p = new Polynomial("x^4 + 12x^3 + 11x^2 - 132x + 108");
 //        assertEqualsFloats(new float[]{-9, -6, 1, 2}, p.roots());

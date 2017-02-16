@@ -243,26 +243,10 @@ public class Polynomial {
             result[1]=(float)Math.sqrt(this.coefi[1]/this.coefi[0]);
             result[0]= result[1]*-1;
             return result;
+         //Arrels amb polinomis de grau 2 amb mes de un exponent
         }else if(this.coefi.length==3&&this.exp[0]==2&&this.exp[1]==1){
-            float a = this.cfs[0];
-            float b = this.cfs[1];
-            float c = this.cfs[2];
-            float d = (b*b)-(4*a*c);
-            if (d<0){
-                return null;
-            }else if (d==0){
-                result = new float[1];
-                result[0]=(b*-1)/(2*a);
-
-                return result;
-            }else {
-                result = new float[2];
-                double result1 = ((b*-1)+Math.sqrt(d))/(2*a);
-                double result2 = ((b*-1)-Math.sqrt(d))/(2*a);
-                result[1]=(float)result1;
-                result[0]=(float)result2;
-                return result;
-            }
+            result = arrel(this.cfs);
+            return result;
          //Arrels bicuadratique exponent elevat a 4
         }else if (this.coefi.length==3&&this.exp[0]==4&&this.exp[1]==2){
             float a = this.coefi[0];
@@ -299,26 +283,41 @@ public class Polynomial {
           //arrels de polinomis amb un exponent elevat a cualsevol numero
           // pero el seguent no ha de tenir exponent x^3 + 2
         }else if(this.coefi.length==2&& exp[1]==0){
-
+            //si l'exponent es par nomes podrem afer arrels de valors positius
             if(exp[0]%2==0){
                 result = new float[2];
                 if (coefi[1]*(-1)<0){
                     return null;
                 }else {
                     float n = (float)exp[0];
-                    result[1]=(float)Math.pow((coefi[1]*(-1)),1.0/n);
+                    result[1]=(float)Math.pow((coefi[1]*(-1)/coefi[0]),1.0/n);
                     result[0]=result[1]*(-1);
                     return result;
                 }
             }else { //si l'exponent en que dividim es inpar se pot fer arrels negatives
                 result = new float[1];
                 float n = (float)exp[0];
-                result[0]=(float)Math.pow((coefi[1]),1.0/n);
+                result[0]=(float)Math.pow((coefi[1]/coefi[0]),1.0/n);
                 result[0]= result[0]*(-1);
                 return result;
             }
+        }else{
+            float[] cof = rufini(this.cfs);
+            result = new float[4];
+            result[2]=res;
+            if(cof.length==4){
+                float[]cof1 = rufini(cof);
+             float[] result1= arrel(cof1);
+                result[0]=result1[0];
+                result[1]=result1[1];
+                result[3]=res;
+            }else if(cof.length==3){
+               result= arrel(cof);
+            }
+
+            return result;
         }
-        return null;
+
     }
 
     // Torna "true" si els polinomis són iguals. Això és un override d'un mètode de la classe Object
@@ -422,6 +421,77 @@ public class Polynomial {
         }else {
             return cfsi;
         }
+    }
+    private int[] divisors (float n){
+        int cont = 0;
+        if (n<0){
+            n =n*(-1);
+        }
+        for (int i = 0; i < n ; i++) {
+            if(n%i==0){
+                cont++;
+            }
+        }
+        int[] div = new int[cont];
+        for (int i = 0, y=0; i < n ; i++) {
+            if(n%i==0){
+                div[y]=i;
+                y++;
+            }
+        }
+        return div;
+    }
+    float res;
+    float[] rufini (float[] cfs){
+
+        int[] divi = divisors(cfs[cfs.length-1]);
+        float[] cof = new float[cfs.length-1];
+        float[] cof2 = new float[cfs.length];
+        for (int i = 0; i <divi.length ; i++) {
+            for (int j = 0; j <cfs.length-1 ; j++) {
+                if(j==0){
+                    cof[j]=divi[i]*cfs[j];
+                    cof[j]=cfs[j+1]+cof[j];
+                    cof2[j]=cfs[j];
+                    cof2[j+1]=cof[j];
+                }else {
+                    cof[j]=divi[i]*cof[j-1];
+                    cof[j]=cfs[j+1]+cof[j];
+                    cof2[j+1]=cof[j];
+                }
+            }
+            if(cof[cfs.length-2]==0){
+                for (int j = 0; j <cof2.length-1 ; j++) {
+                    cof[j]=cof2[j];
+                    res = divi[i];
+                }
+                break;
+            }
+        }
+        return cof;
+    }
+    private float[] arrel(float[] cfs){
+        float[]result;
+        float a = cfs[0];
+        float b = cfs[1];
+        float c = cfs[2];
+        float d = (b*b)-(4*a*c);
+        if (d<0){
+            return null;
+        }else if (d==0){
+            result = new float[1];
+            result[0]=(b*-1)/(2*a);
+
+            return result;
+        }else {
+            result = new float[2];
+            double result1 = ((b*-1)+Math.sqrt(d))/(2*a);
+            double result2 = ((b*-1)-Math.sqrt(d))/(2*a);
+            result[1]=(float)result1;
+            result[0]=(float)result2;
+            return result;
+        }
+
     }
 }
 

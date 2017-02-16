@@ -227,13 +227,13 @@ public class Polynomial {
                }
             }
         }
-
         float[] result;
         //Arrels amb Polinomis de grau 1
         if (this.exp[0]==1){
             result= new float[1];
            result[0]= this.coefi[1] / this.coefi[0];
             result[0]=result[0]*-1;
+            Arrays.sort(result);
             return result;
 
          //Arrels amb polinomi de grau 2 pero amb un exponent
@@ -242,6 +242,7 @@ public class Polynomial {
             this.coefi[1]=this.coefi[1]*-1;
             result[1]=(float)Math.sqrt(this.coefi[1]/this.coefi[0]);
             result[0]= result[1]*-1;
+            Arrays.sort(result);
             return result;
          //Arrels amb polinomis de grau 2 amb mes de un exponent
         }else if(this.coefi.length==3&&this.exp[0]==2&&this.exp[1]==1){
@@ -263,6 +264,7 @@ public class Polynomial {
                     result = new float[2];
                     result[1]=(float)Math.sqrt(result1);
                     result[0]= result[1]*(-1);
+                    Arrays.sort(result);
                     return result;
                 }
 
@@ -275,9 +277,10 @@ public class Polynomial {
                 double result3 = Math.sqrt(arrel2);
                 double result4 = result3*(-1);
                 result[3]=(float)result1;
-                result[2]=(float)result3;
-                result[1]=(float)result4;
-                result[0]=(float)result2;
+                result[2]=(float)result2;
+                result[1]=(float)result3;
+                result[0]=(float)result4;
+                Arrays.sort(result);
                 return result;
             }
           //arrels de polinomis amb un exponent elevat a cualsevol numero
@@ -292,6 +295,7 @@ public class Polynomial {
                     float n = (float)exp[0];
                     result[1]=(float)Math.pow((coefi[1]*(-1)/coefi[0]),1.0/n);
                     result[0]=result[1]*(-1);
+                    Arrays.sort(result);
                     return result;
                 }
             }else { //si l'exponent en que dividim es inpar se pot fer arrels negatives
@@ -314,7 +318,7 @@ public class Polynomial {
             }else if(cof.length==3){
                result= arrel(cof);
             }
-
+            Arrays.sort(result);
             return result;
         }
 
@@ -489,6 +493,7 @@ public class Polynomial {
             double result2 = ((b*-1)-Math.sqrt(d))/(2*a);
             result[1]=(float)result1;
             result[0]=(float)result2;
+            Arrays.sort(result);
             return result;
         }
 
